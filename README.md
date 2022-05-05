@@ -1,26 +1,27 @@
-# reOpenMon for ESP32
+# reNarodMon for ESP32
 
-**EN**: Sending sensor data to http://open-monitoring.online/ with a specified interval and sending queue. For ESP32 only, since it was released as a FreeRTOS task and on ESP32-specific functions. Controller field values (data) are passed to the queue as a string (char*), which is automatically deleted after sending. That is, to send, you must place a line with data on the heap, and then send it to the library queue.
+Библиотека для отправки данных на https://narodmon.ru/ с заданным минимальным интервалом и очередью отправки с помощью GET-запроса. Данная библиотека может быть использована только для ESP32, так как релизовано в виде задачи FreeRTOS и на специфических для ESP32 функциях. Значения полей контроллера (данные) передаются в очередь в виде строки (char*, _не "String"_!), которая будет автоматически удалена из кучи (heap) после отправки. Иными словами - для отправки Вы должны разместить в куче строку с данными и отправить ее в очередь библиотеки с помощью функции _nmSend_. Всё остальное - контроль минимального интервала, генерацию GET-запроса, освобождение ресурсов после отправки - берёт на себя библиотека.
 
-> Controller parameters must be set in "project_config.h" (see below for description)
----
-**RU**: Отправка данных сенсоров на http://open-monitoring.online/ с заданным интервалом и очередью отправки. Только для ESP32, так как релизовано в виде задачи FreeRTOS и на специфических для ESP32 функциях. Значения полей контроллера (данные) передаются в очередь в виде строки (char*), которая автоматически удаляется после отправки. То есть для отправки Вы должны разместить в куче строку с данными, а затем отправить ее в очередь библиотеки.
-
-> Параметры контроллера должны быть заданы в "project_config.h" (описание см. ниже)
 ---
 
 ## Using / Использование:
 
-**EN**: ***Task management: create, suspend, resume and delete***<br/>
-**RU**: ***Управление задачей: создание, приостановка, восстановление и удаление***<br/>
-```
-// @param createSuspended - Create but do not run a task / Создать, но не запускать задачу
+***Создание и запуск задачи и очереди отправки***<br/>
 
-bool omTaskCreate(bool createSuspended);
-bool omTaskSuspend();
-bool omTaskResume();
-bool omTaskDelete();
+Прежде чем устройство сможет начать отправку данных на narodmon.ru, необходимо создать и запустить задачу, которая и будет заниматься непосредственной пересылкой данных. Сделать это можно с помощью функции ***nmTaskCreate(bool createSuspended)***:
 ```
+bool nmTaskCreate(bool createSuspended);
+```
+Если параметр ***createSuspended = true***, то созданная задача будет сразу же приостановлена до вызова ***nmTaskResume()***. Это может быть необходимо, если на момент создания задачи подключение к сети WiFi и (или) Интернет, ещё не установлено. Как только доступ к сети интернет будет получено, выполнить вызов ***nmTaskResume()*** для запуска задачи. Если Вы создаете задачу уже после установки соединения, то необходимо сразу запустить задачу в работу, установив ***createSuspended = false***.
+
+
+```
+bool nmTaskSuspend();
+bool nmTaskResume();
+```
+
+bool nmTaskDelete();
+
 
 **EN**: ***Controller initialization***<br/>
 **RU**: ***Создание контроллера***<br/>
