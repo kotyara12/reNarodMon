@@ -1,0 +1,17 @@
+{
+  "name": "reNarodMon",
+  "version": "2.0.0",
+  "description": "Sending sensor data to https://narodmon.ru/ with a specified interval and sending queue. For ESP32 only, since it was released as a FreeRTOS task and on ESP32-specific functions. Controller field values (data) are passed to the queue as a string (char*), which is automatically deleted after sending. That is, to send, you must place a line with data on the heap, and then send it to the library queue.",
+  "keywords": "narodmon",
+  "authors":
+  [
+    {
+      "name": "Alexander Razzhivin",
+      "email": "kotyara12@yandex.ru",
+      "url": "https://kotyara12.ru"
+    }
+  ],
+  "license": "MIT",
+  "platforms": ["espressif32"],
+  "frameworks": ["arduino", "espidf"]
+}
