@@ -122,6 +122,7 @@ bool nmEventHandlerRegister();
 #endif // CONFIG_NARODMON_ENABLE
 ```
 
+---
 ## Зависимости:
 
 - freertos/FreeRTOS.h (ESP-IDF)
