@@ -178,10 +178,8 @@ void sensorsTaskExec(void *pvParameters)
 
 **Вопрос**: Это что за _malloc_stringf()_?<br/>
 **Ответ**: Функция для динамического размещения строк в куче с форматированием. Ищите в https://github.com/kotyara12/rStrings. Там Вы найдете ещё несколько полезных функций.<br/>
-
-**Вопрос**: Это что за _sensorOutdoor_?<br/>
-**Ответ**: Экземпляр класса-сенсора, см. https://github.com/kotyara12/reSensors. Просто для наглядности. Вы можете использовать свой код.<br/>
 ---
+
 ## Зависимости:
 
 - freertos/FreeRTOS.h (ESP-IDF)
