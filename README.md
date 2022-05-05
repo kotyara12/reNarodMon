@@ -122,7 +122,7 @@ bool nmEventHandlerRegister();
 #endif // CONFIG_NARODMON_ENABLE
 ```
 ---
-## Пример использования:
+## Пример использования
 1. Где-то в коде **void app_main(void)** (главная функция для ESP-IDF, которая запускается при старте FreeRTOS. Для Arduino это будет **void setup()**):
 ```
 #if CONFIG_NARODMON_ENABLE
@@ -182,7 +182,7 @@ void sensorsTaskExec(void *pvParameters)
 **Вопрос**: Это что за _sensorOutdoor_?<br/>
 **Ответ**: Экземпляр класса-сенсора, см. https://github.com/kotyara12/reSensors. Просто для наглядности. Вы можете использовать свой код.<br/>
 
-Если у Вас имеются дополнительные вопросы: пишите в telegram @kotyara1971.
+_Если у Вас имеются дополнительные вопросы: пишите в telegram @kotyara1971_.
 ---
 
 ## Зависимости:
