@@ -122,6 +122,68 @@ bool nmEventHandlerRegister();
 #endif // CONFIG_NARODMON_ENABLE
 ```
 ---
+## Пример использования:
+1. Где-то в коде **void app_main(void)** (главная функция для ESP-IDF, которая запускается при старте FreeRTOS. Для Arduino это будет **void setup()**.):
+```
+#if CONFIG_NARODMON_ENABLE
+#include "reNarodMon.h"
+#endif // CONFIG_NARODMON_ENABLE
+
+...
+...
+...
+
+  // Запуск службы отправки данных на narodmon.ru
+  #if CONFIG_NARODMON_ENABLE
+    nmTaskCreate(false);
+    vTaskDelay(1);
+  #endif // CONFIG_NARODMON_ENABLE
+```
+
+2. В теле задачи, которая занимается считыванием, анализом и публикацией данных с сенсоров:
+```
+void sensorsTaskExec(void *pvParameters)
+{
+  ...
+  // Инициализация устройств NarodMon
+  #if CONFIG_NARODMON_ENABLE
+    nmDeviceInit(CONFIG_NARODMON_DEVICE01_ID, CONFIG_NARODMON_DEVICE01_OWNER, CONFIG_NARODMON_MIN_INTERVAL);
+  #endif // CONFIG_NARODMON_ENABLE
+  ...
+  #if CONFIG_NARODMON_ENABLE
+    esp_timer_t nmSendTimer;
+    timerSet(&nmSendTimer, iNarodMonInterval*1000);
+  #endif // CONFIG_NARODMON_ENABLE
+  ...
+
+  while (1) {
+    // Чтение данных с сенсоров
+    sensorOutdoor.readData();
+
+    // narodmon.ru
+    #if CONFIG_NARODMON_ENABLE
+      if (statesInetIsAvailabled() && timerTimeout(&nmSendTimer) && (sensorOutdoor.getStatus() == SENSOR_STATUS_OK)) {
+        timerSet(&nmSendTimer, iNarodMonInterval*1000);
+        nmSend(CONFIG_NARODMON_DEVICE01_ID, malloc_stringf("T1=%.2f&H1=%.2f", 
+          sensorOutdoor.getValue2(false).filteredValue, sensorOutdoor.getValue1(false).filteredValue));
+      };
+    #endif // CONFIG_NARODMON_ENABLE
+
+    vTaskDelayUntil(&prevTicks, pdMS_TO_TICKS(_sensorsReadInterval * 1000));
+  };
+}
+```
+<br/>
+**Вопрос**: Зачем нужен таймер nmSendTimer, если библиотека сама умеет отслеживать необходимые интервалы?
+**Ответ**: Вы правы, он не является обязательным. Но с помощью дополнительного внешнего таймера я могу регулировать интервал "извне", не изменяя программы (с помощью MQTT например). А библиотека контролирует только минимальный интервал, например при внеочередных изменениях (включение реле, например).
+<br/>
+**Вопрос**: Это что за _malloc_stringf()_?
+**Ответ**: Функция для динамического размещения строк в куче с форматированием. Ищите в https://github.com/kotyara12/rStrings
+<br/>
+**Вопрос**: Это что за _sensorOutdoor_?
+**Ответ**: Экземпляр класса-сенсора, см. https://github.com/kotyara12/reSensors. Просто для наглядности. Вы можете использовать свой код.
+
+---
 ## Зависимости:
 
 - freertos/FreeRTOS.h (ESP-IDF)
