@@ -47,7 +47,7 @@ bool nmDeviceInit(const char* nmId, const char* nmOwner, const uint32_t nmInterv
 Параметры:
 - **const char\* nmId** - идентификатор устройства (обычно MAC-адрес). Обязательное поле.
 - **const char\* nmOwner** - владелец устройства. Облегчает "привязку" устройтсва к Вашей учетной записи при первом запуске. В дальнейшем можно передать NULL (nullptr). Не возбраняется указывать владельца при каждой отправке данных, однако это немного увеличивает длину GET-запроса, особененно если передаваемый трафик с устройства критичен.
-- **uint32_t nmInterval** - минимальный интервал отправки данных в секундах. narodmon.ru в общем случае требует минимальный интервал 5 минут, то есть 300 секунд. Можно задать больше, например 600 секунд.
+- **uint32_t nmInterval** - минимальный интервал отправки данных в миллисекундах. narodmon.ru в общем случае требует минимальный интервал 5 минут, то есть 300 секунд. Можно задать больше, например 600 секунд.
 
 ### Отправка данных
 
@@ -69,50 +69,58 @@ bool nmEventHandlerRegister();
 
 ## Параметры:
 
-**EN**: _Enable sending data to open-monitoring.online_<br/>
-**RU**: _Включить отправку данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_ENABLE 1<br/>
+Параметры библиотеки задаются с помощью следущих макросов препроцессора (#define). Вы можете разместить их в любом удобном файле или нескольких файлах. Самое главное - компилятору должно быть "известно" об этих файлах при сборке библиотек.
 
-**EN**: _Frequency of sending data in seconds_<br/>
-**RU**: _Периодичность отправки данных в секундах_<br/>
-- #define CONFIG_OPENMON_SEND_INTERVAL 180<br/>
+```
+// EN: TLS certificate for API
+// RU: TLS-сертификат для API
+#define CONFIG_NARODMON_TLS_PEM_START "_binary_isrg_root_x1_pem_start"
+#define CONFIG_NARODMON_TLS_PEM_END "_binary_isrg_root_x1_pem_end"
+// EN: Minimum server access interval in milliseconds
+// RU: Минимальный интервал обращения к серверу в миллисекундах
+#define CONFIG_NARODMON_MIN_INTERVAL 300000
+// EN: Server access interval in milliseconds for API failures
+// RU: Интервал обращения к серверу в миллисекундах при отказах API
+#define CONFIG_NARODMON_ERROR_INTERVAL 180000
+// EN: Use static memory allocation for the task and queue. CONFIG_FREERTOS_SUPPORT_STATIC_ALLOCATION must be enabled!
+// RU: Использовать статическое выделение памяти под задачу и очередь. Должен быть включен параметр CONFIG_FREERTOS_SUPPORT_STATIC_ALLOCATION!
+#define CONFIG_NARODMON_STATIC_ALLOCATION 1
+// EN: Stack size for the task of sending data to narodmon.ru
+// RU: Размер стека для задачи отправки данных на narodmon.ru
+#define CONFIG_NARODMON_STACK_SIZE 3072
+// EN: Queue size for the task of sending data to narodmon.ru
+// RU: Размер очереди для задачи отправки данных на narodmon.ru
+#define CONFIG_NARODMON_QUEUE_SIZE 8
+// EN: Timeout for writing to the queue for sending data on narodmon.ru
+// RU: Время ожидания записи в очередь отправки данных на narodmon.ru
+#define CONFIG_NARODMON_QUEUE_WAIT 100
+// EN: The priority of the task of sending data to narodmon.ru
+// RU: Приоритет задачи отправки данных на narodmon.ru
+#define CONFIG_NARODMON_PRIORITY CONFIG_DEFAULT_TASK_PRIORITY
+// EN: Processor core for the task of sending data to narodmon.ru
+// RU: Ядро процессора для задачи отправки данных на narodmon.ru
+#define CONFIG_NARODMON_CORE 1
+// EN: The number of attempts to send data to narodmon.ru
+// RU: Количество попыток отправки данных на narodmon.ru
+#define CONFIG_NARODMON_MAX_ATTEMPTS 3
+// EN: The number of errors in accessing the server in a row, after which a notification will be sent to the event loop
+// RU: Количество ошибок обращения к серверу подряд, после чего будет отправлено оповещение в цикл событий
+#define CONFIG_NARODMON_ERROR_LIMIT 10
+```
 
-**EN**: _Minimum server access interval in milliseconds_<br/>
-**RU**: _Минимальный интервал обращения к серверу в миллисекундах_<br/>
-- #define CONFIG_OPENMON_MIN_INTERVAL 60100<br/>
-
-**EN**: _Stack size for the task of sending data to open-monitoring.online_<br/>
-**RU**: _Размер стека для задачи отправки данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_STACK_SIZE 2048<br/>
-
-**EN**: _Queue size for the task of sending data to open-monitoring.online_<br/>
-**RU**: _Размер очереди для задачи отправки данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_QUEUE_SIZE 8<br/>
-
-**EN**: _Timeout for writing to the queue for sending data on open-monitoring.online_<br/>
-**RU**: _Время ожидания записи в очередь отправки данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_QUEUE_WAIT 100<br/>
-
-**EN**: _The priority of the task of sending data to open-monitoring.online_<br/>
-**RU**: _Приоритет задачи отправки данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_PRIORITY 5<br/>
-
-**EN**: _Processor core for the task of sending data to open-monitoring.online_<br/>
-**RU**: _Ядро процессора для задачи отправки данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_CORE 1<br/>
-
-**EN**: _The number of attempts to send data to open-monitoring.online_<br/>
-**RU**: _Количество попыток отправки данных на open-monitoring.online_<br/>
-- #define CONFIG_OPENMON_MAX_ATTEMPTS 3<br/>
-
-**EN**: _Controller ids and tokens for open-monitoring.online_<br/>
-**RU**: _Идентификаторы контроллеров и токены для open-monitoring.online_<br/>
-#define CONFIG_OPENMON_CTR01_ID 0001<br/>
-#define CONFIG_OPENMON_CTR01_TOKEN "aaaaaa"<br/>
-#define CONFIG_OPENMON_CTR02_ID 0002<br/>
-#define CONFIG_OPENMON_CTR02_TOKEN "bbbbbb"<br/>
-#define CONFIG_OPENMON_CTR03_ID 0003<br/>
-#define CONFIG_OPENMON_CTR03_TOKEN "cccccc"<br/>
+Параметры контроллера можно задать примерно так:
+```
+// EN: Enable sending data to narodmon.ru
+// RU: Включить отправку данных на narodmon.ru
+#define CONFIG_NARODMON_ENABLE 1
+#if CONFIG_NARODMON_ENABLE
+// EN: Frequency of sending data in seconds
+// RU: Периодичность отправки данных в секундах
+#define CONFIG_NARODMON_SEND_INTERVAL 300
+#define CONFIG_NARODMON_DEVICE01_ID "a0:b1:c2:d3:e4:f5"
+#define CONFIG_NARODMON_DEVICE01_OWNER "your_login_on_narodmon"
+#endif // CONFIG_NARODMON_ENABLE
+```
 
 ## Зависимости:
 

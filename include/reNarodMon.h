@@ -38,17 +38,17 @@ bool nmTaskDelete();
  * RU: Добавление нового устройства в список
  * 
  * @param nmId - Device ID (MAC) / Идентификатор устройства (MAC)
- * @param nmOwner - Owner device / Владелец устройства
+ * @param nmOwner - Owner device / Владелец устройства (не обязательное поле)
  * @param nmInterval - Minimal interval / Минимальный интервал
  **/
-bool nmDeviceInit(const char* nmId, const char* nmOwner, const uint32_t omInterval);
+bool nmDeviceInit(const char* nmId, const char* nmOwner, const uint32_t nmInterval);
 
 /**
  * EN: Sending data to the specified controller. The fields string will be removed after submission.
  * If little time has passed since the last data sent to the controller, the data will be queued.
  * If there is already data in the queue for this controller, it will be overwritten with new data.
  * 
- * RU: Отправка данных в заданный контроллер. Строка data будет удалена после отправки. 
+ * RU: Отправка данных в заданное устройство. Строка data будет удалена после отправки. 
  * Если с момента последней отправки данных на сайт прошло мало времени, то данные будут поставлены в очередь.
  * Если в очереди на данное устройство уже есть данные, то они будут перезаписаны новыми данными.
  * 
