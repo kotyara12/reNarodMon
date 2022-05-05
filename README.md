@@ -66,7 +66,7 @@ bool nmSend(const char* nmId, char * nmData);
 ```
 bool nmEventHandlerRegister();
 ```
-
+---
 ## Параметры:
 
 Параметры библиотеки задаются с помощью следущих макросов препроцессора (#define). Вы можете разместить их в любом удобном файле или нескольких файлах. Самое главное - компилятору должно быть "известно" об этих файлах при сборке библиотек.
@@ -121,7 +121,6 @@ bool nmEventHandlerRegister();
 #define CONFIG_NARODMON_DEVICE01_OWNER "your_login_on_narodmon"
 #endif // CONFIG_NARODMON_ENABLE
 ```
-
 ---
 ## Зависимости:
 
