@@ -169,7 +169,7 @@ void sensorsTaskExec(void *pvParameters)
       };
     #endif // CONFIG_NARODMON_ENABLE
 
-    vTaskDelayUntil(&prevTicks, pdMS_TO_TICKS(_sensorsReadInterval * 1000));
+    vTaskDelay(pdMS_TO_TICKS(_sensorsReadInterval * 1000));
   };
 }
 ```
@@ -178,6 +178,11 @@ void sensorsTaskExec(void *pvParameters)
 
 **Вопрос**: Это что за _malloc_stringf()_?<br/>
 **Ответ**: Функция для динамического размещения строк в куче с форматированием. Ищите в https://github.com/kotyara12/rStrings. Там Вы найдете ещё несколько полезных функций.<br/>
+
+**Вопрос**: Это что за _sensorOutdoor_?<br/>
+**Ответ**: Экземпляр класса-сенсора, см. https://github.com/kotyara12/reSensors. Просто для наглядности. Вы можете использовать свой код.<br/>
+
+Если у Вас имеются дополнительные вопросы: пишите в telegram @kotyara1971.
 ---
 
 ## Зависимости:
