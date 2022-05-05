@@ -182,7 +182,6 @@ void sensorsTaskExec(void *pvParameters)
 **Вопрос**: Это что за _sensorOutdoor_?<br/>
 **Ответ**: Экземпляр класса-сенсора, см. https://github.com/kotyara12/reSensors. Просто для наглядности. Вы можете использовать свой код.<br/>
 
-_Если у Вас имеются дополнительные вопросы: пишите в telegram @kotyara1971_.
 ---
 
 ## Зависимости:
